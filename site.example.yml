@@ -13,20 +13,32 @@
     locale_long: ru_RU
     locale_short: ru
 
-    # Project name in various spelling to substitute into file and folder paths.
+    # Project name in various spelling to substitute into file, folder paths and configuration files
     project_name_camel: OOTalks
     project_name_snake: oo_talks
     project_name_www: oo-talks
   roles:
+    # Install web server and php
     - role: web
+      # User for nginx to run at
       http_user: "{{ 'vagrant' if env_name == 'development' else 'nginx' }}"
-      site_id: "{{ project_name_snake }}"
+
+      # If your project root is your web root, leave it blank (""). Or else enter here relative path to web root
+      # For example, this will be "web" for symfony apps.
       site_web_folder: "web"
+
+      # The application type. "symfony" and "regular" is now supported. This is to setup nginx rules correctly
       app_type: "symfony"
+
+      # Register this domains at nginx
       domains:
         - "www.{{ project_name_www }}.local"
         - "{{ project_name_www }}.local"
+
+      # SSL support
       ssl: no
+
+    # Install Postres database server
     - role: postgres
       database: "{{ project_name_snake }}"
       user: "{{ project_name_snake }}"
